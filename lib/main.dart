@@ -1,10 +1,14 @@
 import 'dart:async';
 
+import 'package:coronaApp/CustomLineChart.dart';
 import 'package:coronaApp/Header.dart';
 import 'package:coronaApp/Util/NumberUtil.dart';
 import 'package:coronaApp/model/Country.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:coronaApp/model/Summary.dart';
 import 'package:flutter/material.dart';
+import 'CardView.dart';
+import 'WeeklyBarChart.dart';
 
 import 'Util/Colors.dart';
 import 'GlobalCaseCard.dart';
@@ -52,49 +56,118 @@ class _MyHomePageState extends State<MyHomePage> {
     return MaterialApp(
       home: Scaffold(
           body: SingleChildScrollView(
-        controller: controller,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Header(),
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Container(
-                child: Text("Latest Update : 19 July 2020 07:00 PM"),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Wrap(
-                runSpacing: 20,
-                spacing: 20,
+              controller: controller,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  GlobalCaseCard(
-                      title: "New Confirmed",
-                      value: 20000,
-                      icon: IconData(0xe9d6, fontFamily: "icomoon"),
-                      color: GreenColor),
-                  GlobalCaseCard(
-                      title: "Total Confirmed",
-                      value: 14002328,
-                      icon: IconData(0xe9de, fontFamily: "icomoon"),
-                      color: PrimaryColor),
-                  GlobalCaseCard(
-                      title: "New Death",
-                      value: 5203,
-                      icon: IconData(0xe980, fontFamily: "icomoon"),
-                      color: RedColor),
-                  GlobalCaseCard(
-                      title: "Total Death",
-                      value: 123423,
-                      icon: IconData(0xe99b, fontFamily: "icomoon"),
-                      color: OrangeColor),
+                  Header(),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: Container(
+                      child: Text("Latest Update : 19 July 2020 07:00 PM"),
+                    ),
+                  ),
+                  CardView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text("New Case",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(NumberUtil().setDecimalFormat(23023),
+                            style: TextStyle(
+                                fontSize: 42,
+                                fontWeight: FontWeight.bold,
+                                color: PrimaryColor)),
+                        SizedBox(height: 10),
+                        Text("Data Source : Johns Hopkins CSSE",
+                            style: TextStyle(
+                                color: TextLightColor,
+                                fontWeight: FontWeight.w600)),
+                        SizedBox(height: 20),
+                        WeeklyChart()
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Wrap(
+                      runSpacing: 20,
+                      spacing: 20,
+                      children: <Widget>[
+                        GlobalCaseCard(
+                            title: "New Confirmed",
+                            value: 20000,
+                            icon: IconData(0xe9d6, fontFamily: "icomoon"),
+                            color: GreenColor),
+                        GlobalCaseCard(
+                            title: "Total Confirmed",
+                            value: 14002328,
+                            icon: IconData(0xe9de, fontFamily: "icomoon"),
+                            color: PrimaryColor),
+                        GlobalCaseCard(
+                            title: "New Death",
+                            value: 5203,
+                            icon: IconData(0xe980, fontFamily: "icomoon"),
+                            color: RedColor),
+                        GlobalCaseCard(
+                            title: "Total Death",
+                            value: 123423,
+                            icon: IconData(0xe99b, fontFamily: "icomoon"),
+                            color: OrangeColor),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Container(
+                          margin: EdgeInsets.all(8.0),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 7,
+                                  offset: Offset(0, 3), // changes position of shadow
+                                ),
+                              ],
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text("New Case Chart Weekly",
+                                        style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text("12-19 Jul 2020",
+                                        style: TextStyle(
+                                            fontSize: 32,
+                                            fontWeight: FontWeight.bold,
+                                            color: PrimaryColor)),
+                                    SizedBox(height: 5),
+                                    Text("Data Source : Johns Hopkins CSSE",
+                                        style: TextStyle(
+                                            color: TextLightColor,
+                                            fontWeight: FontWeight.w600)),
+                                  ],
+                                ),
+                              ),
+                              CustomLineChart()
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
-              ),
-            )
-          ],
-        ),
-      )),
+              ))),
     );
   }
 
@@ -250,3 +323,5 @@ class _MyHomePageState extends State<MyHomePage> {
 //    );
 //  }
 }
+
+
