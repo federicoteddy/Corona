@@ -20,16 +20,11 @@ class _HeaderState extends State<Header> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Align(
-                alignment: Alignment.topRight,
-                child:  Icon(IconData(0xe9c3, fontFamily: "icomoon"),
-                    color: Colors.white)),
             Expanded(
               child: Stack(
                 children: <Widget>[
                   Image.asset("assets/images/people.png",
                       alignment: Alignment.centerLeft),
-                  SizedBox(height: 20),
                   Positioned(
                     top: 80,
                     left: 180,
@@ -66,6 +61,3 @@ class MyClipper extends CustomClipper<Path> {
     return false;
   }
 }
-
-
-

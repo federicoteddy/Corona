@@ -1,4 +1,3 @@
-import 'package:coronaApp/Util/Colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +18,7 @@ class WeeklyChart extends StatelessWidget {
               showTitles: true,
               getTitles: getWeek,
               textStyle: TextStyle(
-                color: Color(0xFF7589A2),
+                color: Colors.white,
                 fontSize: 10,
                 fontWeight: FontWeight.w200,
               ),
@@ -42,7 +41,7 @@ getBarGroups() {
           BarChartRodData(
             y: value,
             //This is not the proper way, this is just for demo
-            color: i == 4 ? PrimaryColor : PrimaryColor.withOpacity(0.15),
+            color: i == 4 ? Colors.white : Colors.white.withOpacity(0.15),
             width: 16,
           )
         ],

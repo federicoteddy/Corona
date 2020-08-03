@@ -1,4 +1,5 @@
 import 'package:coronaApp/model/Country.dart';
+import 'package:coronaApp/model/CountryStatus.dart';
 import 'package:coronaApp/model/Summary.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -21,13 +22,28 @@ class DataController {
     }
   }
 
-  Future<List<Country>> getLatestUpdateByCountry() async {
-    final response = await http.get(baseUrl + "total/country/malaysia");
+  Future<List<Country>> getCountryList() async {
+    final response = await http.get(baseUrl + "countries");
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
       print("response = " + response.body);
-      return (response.body as List).map((e) => Country.fromJson(e)).toList();
+      return (json.decode(response.body) as List).map((e) => Country.fromJson(e)).toList();
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load summary');
+    }
+  }
+
+  Future<List<CountryStatus>> getLatestUpdateByCountry(String countryName) async {
+    print("url = "+baseUrl + "country/" + countryName);
+    final response = await http.get(baseUrl + "country/" + countryName);
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      print("response = " + response.body);
+      return (json.decode(response.body) as List).map((e) => CountryStatus.fromJson(e)).toList();
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.

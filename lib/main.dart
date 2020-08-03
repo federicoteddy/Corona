@@ -3,18 +3,21 @@ import 'dart:async';
 import 'package:coronaApp/CustomLineChart.dart';
 import 'package:coronaApp/Header.dart';
 import 'package:coronaApp/Util/NumberUtil.dart';
-import 'package:coronaApp/model/Country.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:coronaApp/model/CountryStatus.dart';
 import 'package:coronaApp/model/Summary.dart';
 import 'package:flutter/material.dart';
-import 'CardView.dart';
-import 'WeeklyBarChart.dart';
 
-import 'Util/Colors.dart';
+import 'CardView.dart';
 import 'GlobalCaseCard.dart';
+import 'SearchBar.dart';
+import 'Util/Colors.dart';
+import 'Util/DataController.dart';
+import 'WeeklyBarChart.dart';
+import 'model/Global.dart';
 
 void main() {
   runApp(MyHomePage());
+
 }
 
 class MyHomePage extends StatefulWidget {
@@ -27,7 +30,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Future<Summary> summary;
-  Future<List<Country>> malaysia;
+  Future<List<CountryStatus>> malaysia;
   final controller = ScrollController();
   double offset = 0;
 
@@ -35,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     //fetchData();
+    onRefresh();
     controller.addListener(onScroll);
   }
 
@@ -51,6 +55,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void onRefresh() {
+    setState(() {
+      summary = DataController().getSummary();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -64,9 +74,38 @@ class _MyHomePageState extends State<MyHomePage> {
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0),
                     child: Container(
-                      child: Text("Latest Update : 19 July 2020 07:00 PM"),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text("Latest Update : "+DateTime.now().toLocal().toString()),
+                          IconButton(
+                              icon: Icon(
+                                  IconData(0xe9c3, fontFamily: "icomoon"),
+                                  color: PrimaryColor,
+                                  size: 20),
+                              onPressed: onRefresh),
+                        ],
+                      ),
                     ),
                   ),
+                  SearchBar(),
+                  FutureBuilder<Summary>(
+                      future: summary,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasData) {
+                            return setGlobalData(snapshot.data.global);
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }),
                   CardView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,35 +127,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Wrap(
-                      runSpacing: 20,
-                      spacing: 20,
-                      children: <Widget>[
-                        GlobalCaseCard(
-                            title: "New Confirmed",
-                            value: 20000,
-                            icon: IconData(0xe9d6, fontFamily: "icomoon"),
-                            color: GreenColor),
-                        GlobalCaseCard(
-                            title: "Total Confirmed",
-                            value: 14002328,
-                            icon: IconData(0xe9de, fontFamily: "icomoon"),
-                            color: PrimaryColor),
-                        GlobalCaseCard(
-                            title: "New Death",
-                            value: 5203,
-                            icon: IconData(0xe980, fontFamily: "icomoon"),
-                            color: RedColor),
-                        GlobalCaseCard(
-                            title: "Total Death",
-                            value: 123423,
-                            icon: IconData(0xe99b, fontFamily: "icomoon"),
-                            color: OrangeColor),
-                      ],
-                    ),
-                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -132,7 +142,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                   color: Colors.grey.withOpacity(0.5),
                                   spreadRadius: 2,
                                   blurRadius: 7,
-                                  offset: Offset(0, 3), // changes position of shadow
+                                  offset: Offset(
+                                      0, 3), // changes position of shadow
                                 ),
                               ],
                               borderRadius: BorderRadius.circular(8)),
@@ -145,7 +156,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Text("New Case Chart Weekly",
-                                        style: TextStyle(fontWeight: FontWeight.bold)),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
                                     Text("12-19 Jul 2020",
                                         style: TextStyle(
                                             fontSize: 32,
@@ -168,6 +180,42 @@ class _MyHomePageState extends State<MyHomePage> {
                   )
                 ],
               ))),
+    );
+  }
+
+  Column setGlobalData(Global global) {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Wrap(
+            runSpacing: 20,
+            spacing: 20,
+            children: <Widget>[
+              GlobalCaseCard(
+                  title: "New Confirmed",
+                  value: global.newConfirmed,
+                  icon: IconData(0xe9d6, fontFamily: "icomoon"),
+                  color: GreenColor),
+              GlobalCaseCard(
+                  title: "Total Confirmed",
+                  value: global.totalConfirmed,
+                  icon: IconData(0xe9de, fontFamily: "icomoon"),
+                  color: PrimaryColor),
+              GlobalCaseCard(
+                  title: "New Death",
+                  value: global.newDeaths,
+                  icon: IconData(0xe980, fontFamily: "icomoon"),
+                  color: RedColor),
+              GlobalCaseCard(
+                  title: "Total Death",
+                  value: global.totalDeaths,
+                  icon: IconData(0xe99b, fontFamily: "icomoon"),
+                  color: OrangeColor),
+            ],
+          ),
+        )
+      ],
     );
   }
 

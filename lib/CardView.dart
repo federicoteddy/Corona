@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CardView extends StatelessWidget {
-  Widget child;
+  final Widget child;
 
   CardView({Key key, this.child}) : super(key: key);
 

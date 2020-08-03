@@ -1,8 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-import 'Util/Colors.dart';
-
 class CustomLineChart extends StatefulWidget {
   @override
   _CustomLineChartState createState() => _CustomLineChartState();
@@ -10,8 +8,8 @@ class CustomLineChart extends StatefulWidget {
 
 class _CustomLineChartState extends State<CustomLineChart> {
   List<Color> gradientColors = [
-    const Color(0xff23b6e6),
-    const Color(0xff02d39a),
+    const Color(0xffE9F7FC),
+    const Color(0xff035AA6),
   ];
 
   bool showAvg = false;
@@ -67,12 +65,12 @@ class _CustomLineChartState extends State<CustomLineChart> {
         },
       ),
       titlesData: FlTitlesData(
-        show: false,
+        show: true,
         bottomTitles: SideTitles(
-          showTitles: true,
+          showTitles: false,
           reservedSize: 22,
           textStyle:
-          const TextStyle(color: Color(0xff68737d), fontWeight: FontWeight.bold, fontSize: 16),
+          const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
           getTitles: (value) {
             switch (value.toInt()) {
               case 2:
@@ -87,9 +85,9 @@ class _CustomLineChartState extends State<CustomLineChart> {
           margin: 8,
         ),
         leftTitles: SideTitles(
-          showTitles: true,
+          showTitles: false,
           textStyle: const TextStyle(
-            color: Color(0xff67727d),
+            color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 15,
           ),
@@ -118,12 +116,12 @@ class _CustomLineChartState extends State<CustomLineChart> {
         LineChartBarData(
           spots: [
             FlSpot(0, 3),
-            FlSpot(2.6, 2),
-            FlSpot(4.9, 5),
-            FlSpot(6.8, 3.1),
+            FlSpot(2, 2),
+            FlSpot(4, 5),
+            FlSpot(6, 3.1),
             FlSpot(8, 4),
-            FlSpot(9.5, 3),
-            FlSpot(11, 4),
+            FlSpot(10, 3),
+            FlSpot(12, 4),
           ],
           isCurved: true,
           colors: gradientColors,
@@ -133,7 +131,29 @@ class _CustomLineChartState extends State<CustomLineChart> {
             show: false,
           ),
           belowBarData: BarAreaData(
-            show: true,
+            show: false,
+            colors: gradientColors.map((color) => color.withOpacity(0.1)).toList(),
+          ),
+        ),
+        LineChartBarData(
+          spots: [
+            FlSpot(0, 1),
+            FlSpot(2, 1),
+            FlSpot(4, 3),
+            FlSpot(6, 6),
+            FlSpot(8, 1),
+            FlSpot(10, 2),
+            FlSpot(12, 5),
+          ],
+          isCurved: true,
+          colors: gradientColors,
+          barWidth: 5,
+          isStrokeCapRound: true,
+          dotData: FlDotData(
+            show: false,
+          ),
+          belowBarData: BarAreaData(
+            show: false,
             colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
           ),
         ),
@@ -228,7 +248,7 @@ class _CustomLineChartState extends State<CustomLineChart> {
           barWidth: 5,
           isStrokeCapRound: true,
           dotData: FlDotData(
-            show: false,
+            show: true,
           ),
           belowBarData: BarAreaData(show: true, colors: [
             ColorTween(begin: gradientColors[0], end: gradientColors[1]).lerp(0.2).withOpacity(0.1),
